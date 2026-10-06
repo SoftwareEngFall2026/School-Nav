@@ -1,10 +1,58 @@
 import { useState } from 'react'
 import './App.css'
 
+const landmarks = ['Library', 'School Center', 'Cafeteria', 'Learning Commons']
+
+type Location = { landmark: string; room: string }
+
+function LocationField({
+  id,
+  label,
+  value,
+  onChange,
+}: {
+  id: string
+  label: string
+  value: Location
+  onChange: (location: Location) => void
+}) {
+  return (
+    <fieldset className="field">
+      <legend>{label}</legend>
+      <label htmlFor={`${id}-landmark`}>Choose a landmark</label>
+      <select
+        id={`${id}-landmark`}
+        value={value.landmark}
+        onChange={(event) => onChange({ landmark: event.target.value, room: '' })}
+      >
+        <option value="">Select a landmark</option>
+        {landmarks.map((landmark) => (
+          <option key={landmark} value={landmark}>{landmark}</option>
+        ))}
+      </select>
+      <span className="location-divider">or</span>
+      <label htmlFor={`${id}-room`}>Enter a specific room</label>
+      <input
+        id={`${id}-room`}
+        type="text"
+        placeholder="e.g. W-302 or O-309"
+        value={value.room}
+        onChange={(event) => onChange({ landmark: '', room: event.target.value })}
+        aria-describedby={`${id}-hint`}
+      />
+      <p className="location-hint" id={`${id}-hint`}>
+        Choose a landmark or type a room number.
+      </p>
+    </fieldset>
+  )
+}
+
 function App() {
-  const [startingPoint, setStartingPoint] = useState('')
-  const [destination, setDestination] = useState('')
+  const [startingPoint, setStartingPoint] = useState<Location>({ landmark: '', room: '' })
+  const [destination, setDestination] = useState<Location>({ landmark: '', room: '' })
   const [submitted, setSubmitted] = useState(false)
+  const from = startingPoint.landmark || startingPoint.room.trim()
+  const to = destination.landmark || destination.room.trim()
 
   return (
     <main className="homepage">
@@ -17,7 +65,7 @@ function App() {
         <p className="eyebrow">Find your way around</p>
         <h1>Where do you need to go?</h1>
         <p className="description">
-          Choose where you are and search for your destination
+          Choose a landmark or enter a room number for each location
           to get clear, written directions.
         </p>
       </section>
@@ -28,48 +76,32 @@ function App() {
         <form
           onSubmit={(event) => {
             event.preventDefault()
-            setSubmitted(true)
+            if (from && to) setSubmitted(true)
           }}
         >
-          <div className="field">
-            <label htmlFor="starting-point">Where are you starting?</label>
-
-            <select
-              id="starting-point"
-              value={startingPoint}
-              onChange={(event) => {
-                setStartingPoint(event.target.value)
-                setSubmitted(false)
-              }}
-              required
-            >
-              <option value="">Choose a starting point</option>
-              <option value="Sample Entrance">Sample Entrance</option>
-              <option value="Sample Library">Sample Library</option>
-              <option value="Sample Room A">Sample Room A</option>
-            </select>
-          </div>
-
-          <div className="field">
-            <label htmlFor="destination">Where are you going?</label>
-
-            <input
-              id="destination"
-              type="search"
-              placeholder="Enter a room number or location"
-              value={destination}
-              onChange={(event) => {
-                setDestination(event.target.value)
-                setSubmitted(false)
-              }}
-              required
-            />
-          </div>
+          <LocationField
+            id="starting-point"
+            label="Where are you starting?"
+            value={startingPoint}
+            onChange={(location) => {
+              setStartingPoint(location)
+              setSubmitted(false)
+            }}
+          />
+          <LocationField
+            id="destination"
+            label="Where are you going?"
+            value={destination}
+            onChange={(location) => {
+              setDestination(location)
+              setSubmitted(false)
+            }}
+          />
 
           <button
             className="directions-button"
             type="submit"
-            disabled={!startingPoint || !destination.trim()}
+            disabled={!from || !to}
           >
             Get Directions
           </button>
@@ -78,8 +110,8 @@ function App() {
         {submitted && (
           <div className="journey-summary" role="status">
             <h3>Journey selected</h3>
-            <p><strong>From:</strong> {startingPoint}</p>
-            <p><strong>To:</strong> {destination.trim()}</p>
+            <p><strong>From:</strong> {from}</p>
+            <p><strong>To:</strong> {to}</p>
           </div>
         )}
       </section>
