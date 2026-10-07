@@ -30,7 +30,7 @@ function LocationField({
         onChange={(event) => onChange({ landmark: event.target.value, room: '' })}
       >
         <option value="">Select a landmark</option>
-        {schoolLocations.map((landmark) => (
+        {schoolLocations.filter((landmark) => !landmark.isWaypoint).map((landmark) => (
           <option key={landmark.id} value={landmark.id}>{landmark.displayName}</option>
         ))}
       </select>
