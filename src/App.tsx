@@ -1,9 +1,13 @@
 import { useState } from 'react'
+import { schoolLocations } from './data/schoolLocations'
 import './App.css'
 
-const landmarks = ['Library', 'School Center', 'Cafeteria', 'Learning Commons']
-
 type Location = { landmark: string; room: string }
+
+function getLocationName(location: Location) {
+  return schoolLocations.find((landmark) => landmark.id === location.landmark)?.displayName
+    || location.room.trim()
+}
 
 function LocationField({
   id,
@@ -26,8 +30,8 @@ function LocationField({
         onChange={(event) => onChange({ landmark: event.target.value, room: '' })}
       >
         <option value="">Select a landmark</option>
-        {landmarks.map((landmark) => (
-          <option key={landmark} value={landmark}>{landmark}</option>
+        {schoolLocations.map((landmark) => (
+          <option key={landmark.id} value={landmark.id}>{landmark.displayName}</option>
         ))}
       </select>
       <span className="location-divider">or</span>
@@ -51,8 +55,8 @@ function App() {
   const [startingPoint, setStartingPoint] = useState<Location>({ landmark: '', room: '' })
   const [destination, setDestination] = useState<Location>({ landmark: '', room: '' })
   const [submitted, setSubmitted] = useState(false)
-  const from = startingPoint.landmark || startingPoint.room.trim()
-  const to = destination.landmark || destination.room.trim()
+  const from = getLocationName(startingPoint)
+  const to = getLocationName(destination)
 
   return (
     <main className="homepage">
