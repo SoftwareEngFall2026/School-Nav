@@ -66,6 +66,23 @@
   font-size: 22px;
 }
 
+.route-hint {
+  margin: -12px 0 26px;
+  color: #596779;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.direction-steps {
+  margin: 20px 0 0;
+  padding-left: 24px;
+  line-height: 1.6;
+}
+
+.direction-steps li {
+  padding-left: 6px;
+}
+
 .field {
   display: flex;
   flex-direction: column;

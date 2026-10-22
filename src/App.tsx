@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { schoolLocations } from './data/schoolLocations'
+import { findWrittenRoute, resolveRoomId } from './data/writtenRoutes'
 import './App.css'
 
 type Location = { landmark: string; room: string }
 
 function getLocationName(location: Location) {
-  return schoolLocations.find((landmark) => landmark.id === location.landmark)?.displayName
+  const id = location.landmark || resolveRoomId(location.room)
+  return schoolLocations.find((landmark) => landmark.id === id)?.displayName
     || location.room.trim()
 }
 
@@ -57,6 +59,10 @@ function App() {
   const [submitted, setSubmitted] = useState(false)
   const from = getLocationName(startingPoint)
   const to = getLocationName(destination)
+  const route = findWrittenRoute(
+    startingPoint.landmark || resolveRoomId(startingPoint.room) || '',
+    destination.landmark || resolveRoomId(destination.room) || '',
+  )
 
   return (
     <main className="homepage">
@@ -76,6 +82,9 @@ function App() {
 
       <section className="navigation-panel" aria-labelledby="panel-title">
         <h2 id="panel-title">Plan your journey</h2>
+        <p className="route-hint">
+          First route available: W-301 → W-302, floor 3.
+        </p>
 
         <form
           onSubmit={(event) => {
@@ -113,15 +122,26 @@ function App() {
 
         {submitted && (
           <div className="journey-summary" role="status">
-            <h3>Journey selected</h3>
+            <h3>{route ? 'Your directions' : 'Route unavailable'}</h3>
             <p><strong>From:</strong> {from}</p>
             <p><strong>To:</strong> {to}</p>
+            {route ? (
+              <ol className="direction-steps">
+                {route.connections.map((connection) => (
+                  <li key={`${connection.from}-${connection.to}`}>{connection.direction}</li>
+                ))}
+              </ol>
+            ) : (
+              <p>
+                Directions are not available for this route yet. Try W-301 → W-302.
+              </p>
+            )}
           </div>
         )}
       </section>
 
       <footer className="site-footer">
-        <p>Proof of Concept 1 · Fictional sample locations</p>
+        <p>School Nav prototype · First route: W-301 → W-302</p>
       </footer>
     </main>
   )
