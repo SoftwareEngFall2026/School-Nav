@@ -106,6 +106,44 @@
   font-size: 14px;
 }
 
+.location-back-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+.location-back-links button {
+  min-height: 44px;
+  padding: 6px 0;
+  border: 0;
+  background: transparent;
+  color: #244f88;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.location-back-links button:focus-visible {
+  outline: 3px solid #b7d1f4;
+  outline-offset: 2px;
+}
+
+.pod-badge {
+  align-self: flex-start;
+  padding: 5px 10px;
+  border: 1px solid #bdc9d8;
+  border-left: 8px solid #69788b;
+  border-radius: 6px;
+  color: #182b49;
+  background: #f5f7fb;
+  font-size: 14px;
+}
+
+.pod-red { border-left-color: #b72f40; background: #fff0f2; }
+.pod-orange { border-left-color: #c35b0c; background: #fff3e8; }
+.pod-yellow { border-left-color: #a17b00; background: #fffbe4; }
+.pod-white { border-left-color: #8795a6; background: #fff; }
+
 .location-hint {
   margin: 0;
   color: #596779;

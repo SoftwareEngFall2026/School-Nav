@@ -34,6 +34,29 @@ export const schoolPods = [
 
 export type PodId = (typeof schoolPods)[number]['id']
 
+export interface SchoolStaircase {
+  id: string
+  displayName: string
+  buildingId: BuildingId
+  shape: 'circular'
+  /** Confirmed served floors only; other floors remain unknown. */
+  confirmedServedFloors: readonly number[]
+  top: { floor: number; podId: PodId }
+}
+
+// Physical staircase facts supplied by the user. Landing IDs, numbered graph
+// mappings and walking times have not been established.
+export const schoolStaircases = [
+  {
+    id: 'red-staircase',
+    displayName: 'Red Staircase',
+    buildingId: 'main-school',
+    shape: 'circular',
+    confirmedServedFloors: [3, 2, 1],
+    top: { floor: 3, podId: 'red' }, // Red/Math Pod is at the top.
+  },
+] as const satisfies readonly SchoolStaircase[]
+
 export type SchoolLocationCategory =
   | 'english'
   | 'health'
@@ -314,8 +337,8 @@ function locationIdFor(nodeNumber: number) {
   return locationsByNumber.get(nodeNumber)?.id ?? `unknown-node-${nodeNumber}`
 }
 
-// No stairs or ramps are known yet, so every edge is a hallway, doorway or
-// outdoor edge. Change individual edges once stairs are identified.
+// Imported graph edges have no confirmed stair or ramp mappings yet.
+// Known staircase metadata alone does not identify their graph connections.
 function edgeKindFor(fromNumber: number, toNumber: number): SchoolEdgeKind {
   const a = locationsByNumber.get(fromNumber)
   const b = locationsByNumber.get(toNumber)
